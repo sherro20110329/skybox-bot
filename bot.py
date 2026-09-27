@@ -119,7 +119,7 @@ class ShopView(View):
 
         await interaction.response.send_modal(BuyModal())
 
-@bot.tree.command(name="가판대생성", description="스카이박스 멀티 상점 가판대를 생성합니다.")
+@bot.tree.command(name="자판기", description="스카이박스 멀티 상점 가판대를 생성합니다.")
 async def create_shop(interaction: discord.Interaction):
     await interaction.response.defer() 
     
