@@ -124,7 +124,7 @@ async def create_shop(interaction: discord.Interaction):
         color=discord.Color.from_rgb(43, 88, 255)
     )
     
-    embed.set_image(url="https://unsplash.com") 
+    embed.set_image(url="https://cdn.discordapp.com/attachments/1455576902634049546/1517096319246663730/ezgif.com-video-to-gif-converter_5.gif") 
     embed.set_footer(text="⚡ 24 Hours Unlimited Skybox Vending Machine", icon_url=interaction.user.display_avatar.url)
 
     view = View()
