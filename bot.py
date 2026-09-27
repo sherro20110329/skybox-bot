@@ -18,6 +18,13 @@ intents.message_content = True
 intents.members = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
+# 🌌 [수정해야 할 영역] 코드 중간 @bot.event 바로 윗부분을 찾으세요!
+
+# 👇 이 3줄 코드를 새로 추가해 줍니다! (렌더 시스템에게 가짜 웹 주소를 던져서 1초 만에 초록불을 띄우는 마법의 코드)
+from aiohttp import web
+async def handle(request): return web.Response(text="LIVE")
+bot.loop.create_task(web._run_app(web.Application([web.get('/', handle)]), port=10000))
+
 @bot.event
 async def on_ready():
     print(f"🤖 라이벌스 파일 자판기 봇 로그인 완료: {bot.user.name}")
