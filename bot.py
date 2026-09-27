@@ -1,35 +1,35 @@
 import discord
 from discord.ext import commands
-from discord.ui import Select, View, Button
+from discord.ui import View, Button
 import os
+from aiohttp import web
 
-# ⚠️ 여기 아래 2가지 기본 정보만 내 것에 맞게 수정하세요!
+# ⚠️ 기본 정보 설정 (내 주소와 ID에 맞게 수정하세요!)
 BOT_TOKEN = os.environ.get("DISCORD_TOKEN")
-MY_ACCOUNT_INFO = "https://qr.kakaopay.com/FSPRjaCAp"
-ADMIN_USER_ID = 1383372151498997790
+MY_ACCOUNT_INFO = "https://kakaopay.com"
+ADMIN_USER_ID = 1383372151498997790  # 유저님의 고유 ID 숫자
 
-# 🌌 판매할 라이벌스 스박 제품 리스트 (구글 드라이브 링크를 넣어줍니다!)
+# 🌌 판매할 라이벌스 스박 제품 리스트
 SKYBOX_PRODUCTS = {
-    "1": {"name": "stellive tell your world skybox", "price": "4500", "url": "https://drive.google.com/drive/folders/1BUfyGYMjL_uowfF6ojXGvJeyH7VGPEj3?usp=sharing"},
-    "2": {"name": "stellive Hanako Nana skybox", "price": "3000", "url": "https://drive.google.com/drive/folders/10tBF9cXFEtfj8LNAykgHSwXT6WXMzGzg?usp=sharing"}
+    "1": {
+        "name": "🌌 우주 은하수 스박 (6개 파일 세트)", 
+        "price": "1000", 
+        "url": "여기에_구글_드라이브_폴더_공유_링크를_붙여넣으세요"
+    },
+    "2": {
+        "name": "🌅 핑크빛 노을 스박 (6개 파일 세트)", 
+        "price": "1500", 
+        "url": "여기에_두번째_구글_드라이브_링크_입력"
+    },
 }
+
+# 렌더 시스템 우회용 가짜 웹 서버
+async def handle(request): return web.Response(text="LIVE")
 
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 bot = commands.Bot(command_prefix="!", intents=intents)
-
-# 🌌 [수정해야 할 영역] 코드 중간 @bot.event 바로 윗부분을 찾으세요!
-
-# 👇 이 3줄 코드를 새로 추가해 줍니다! (렌더 시스템에게 가짜 웹 주소를 던져서 1초 만에 초록불을 띄우는 마법의 코드)
-# ✅ [새로 교체할 충돌 없는 최신 3줄 코드]
-from aiohttp import web
-async def handle(request): return web.Response(text="LIVE")
-@bot.event
-async def setup_hook():
-    app = web.Application(); app.add_routes([web.get('/', handle)])
-    runner = web.AppRunner(app); await runner.setup()
-    site = web.TCPSite(runner, '0.0.0.0', 10000); bot.loop.create_task(site.start())
 
 @bot.event
 async def on_ready():
@@ -39,13 +39,19 @@ async def on_ready():
         print("✅ 슬래시 명령어 동기화 완료")
     except Exception as e: print(e)
 
-# 🛒 [교체할 영역] 드롭다운 대신 들어가는 사각형 멀티 버튼 뷰 클래스
-class ShopView(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=None) # 24시간 버튼 영구 활성화
+@bot.event
+async def setup_hook():
+    app = web.Application(); app.add_routes([web.get('/', handle)])
+    runner = web.AppRunner(app); await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', 10000); bot.loop.create_task(site.start())
 
-    @discord.ui.button(label="충전 💰", style=discord.ButtonStyle.success) # 초록색 버튼
-    async def charge_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
+# 🛒 [버튼형 상점 뷰] 충전, 상품목록, 구매 3개 버튼 구성
+class ShopView(View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(label="충전 💰", style=discord.ButtonStyle.success)
+    async def charge_btn(self, interaction: discord.Interaction, button: Button):
         embed = discord.Embed(
             title="💸 카카오페이 충전 안내",
             description=f"아래 링크를 통해 판매자에게 송금하실 수 있습니다.\n\n📌 **송금 주소:** {MY_ACCOUNT_INFO}",
@@ -53,8 +59,8 @@ class ShopView(discord.ui.View):
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @discord.ui.button(label="상품목록 📦", style=discord.ButtonStyle.secondary) # 회색 버튼
-    async def list_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
+    @discord.ui.button(label="상품목록 📦", style=discord.ButtonStyle.secondary)
+    async def list_btn(self, interaction: discord.Interaction, button: Button):
         product_text = ""
         for key, info in SKYBOX_PRODUCTS.items():
             product_text += f"**[{key}번] {info['name']}**\n┗ 💵 가격: {info['price']}원\n\n"
@@ -66,9 +72,8 @@ class ShopView(discord.ui.View):
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @discord.ui.button(label="구매 💳", style=discord.ButtonStyle.primary) # 파란색 버튼
-    async def buy_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
-        # [구매] 버튼 클릭 시 화면에 띄워줄 팝업 입력창(모달) 설정
+    @discord.ui.button(label="구매 💳", style=discord.ButtonStyle.primary)
+    async def buy_btn(self, interaction: discord.Interaction, button: Button):
         class BuyModal(discord.ui.Modal, title="🛒 상품 구매 신청"):
             num_input = discord.ui.TextInput(label="구매할 상품 번호를 입력하세요", placeholder="예: 1", min_length=1, max_length=2)
             
@@ -85,7 +90,7 @@ class ShopView(discord.ui.View):
                     color=discord.Color.orange()
                 )
                 
-                done_btn = discord.ui.Button(label="입금 완료 🌟", style=discord.ButtonStyle.blurple)
+                done_btn = Button(label="입금 완료 🌟", style=discord.ButtonStyle.blurple)
                 
                 async def done_callback(done_inter: discord.Interaction):
                     await done_inter.response.send_message("⚙️ 관리자에게 입금 확인 요청을 보냈습니다. 잠시만 기다려주세요!", ephemeral=True)
@@ -102,8 +107,8 @@ class ShopView(discord.ui.View):
                         color=discord.Color.red()
                     )
                     
-                    approve_btn = discord.ui.Button(label="승인 (다운로드 링크 발급)", style=discord.ButtonStyle.success)
-                    reject_btn = discord.ui.Button(label="거절 (취소 처리)", style=discord.ButtonStyle.danger)
+                    approve_btn = Button(label="승인 (다운로드 링크 발급)", style=discord.ButtonStyle.success)
+                    reject_btn = Button(label="거절 (취소 처리)", style=discord.ButtonStyle.danger)
                     
                     async def approve_callback(app_inter: discord.Interaction):
                         try:
@@ -122,17 +127,16 @@ class ShopView(discord.ui.View):
                         await rej_inter.response.send_message("❌ 구매 요청을 거절 처리했습니다.", ephemeral=True)
 
                     approve_btn.callback = approve_callback; reject_btn.callback = reject_callback
-                    admin_view = discord.ui.View(); admin_view.add_item(approve_btn); admin_view.add_item(reject_btn)
+                    admin_view = View(); admin_view.add_item(approve_btn); admin_view.add_item(reject_btn)
                     await admin_user.send(embed=admin_embed, view=admin_view)
 
                 done_btn.callback = done_callback
-                pay_view = discord.ui.View(); pay_view.add_item(done_btn)
+                pay_view = View(); pay_view.add_item(done_btn)
                 await modal_inter.response.send_message(embed=pay_embed, view=pay_view, ephemeral=True)
 
         await interaction.response.send_modal(BuyModal())
 
-
-@bot.tree.command(name="자판기", description="스카이박스 멀티 상점 가판대를 생성합니다.")
+@bot.tree.command(name="가판대생성", description="스카이박스 멀티 상점 가판대를 생성합니다.")
 async def create_shop(interaction: discord.Interaction):
     await interaction.response.defer() 
     
@@ -140,20 +144,17 @@ async def create_shop(interaction: discord.Interaction):
         title="🤖 SKYBOX STUDIO (스카이박스 전문 상점)",
         description=(
             "🇰🇷 **한국어 • 🇺🇸 English**\n\n"
-            "📥 아래 메뉴를 눌러 카테고리별 상품 선택, 금액 결제 및 파일 다운로드를 한 번에 이용하실 수 있습니다.\n\n"
+            "📥 아래 버튼들을 눌러 포인트 충전 안내, 상품 선택, 금액 결제 및 파일 다운로드를 한 번에 이용하실 수 있습니다.\n\n"
             "**🔹 등록 카테고리:** 1개 • **🔹 판매 상품:** 멀티 보유 중\n\n"
             "──────────────────────────────\n"
-            " 원하는 스카이박스 종류를 아래 선택 메뉴에서 골라보세요!\n"
-            " Select a function using the dropdown menu below."
+            "원하시는 기능을 아래 버튼 메뉴에서 골라보세요!\n"
+            "Select a function using the button menu below."
         ),
         color=discord.Color.from_rgb(43, 88, 255)
     )
-    
-    embed.set_image(url="https://cdn.discordapp.com/attachments/1455576902634049546/1517096319246663730/ezgif.com-video-to-gif-converter_5.gif") 
+    embed.set_image(url="https://unsplash.com") 
     embed.set_footer(text="⚡ 24 Hours Unlimited Skybox Vending Machine", icon_url=interaction.user.display_avatar.url)
 
-    view = View()
-    view.add_item(SkyboxSelect())
-    await interaction.followup.send(embed=embed, view=view)
+    await interaction.followup.send(embed=embed, view=ShopView())
 
 bot.run(BOT_TOKEN)
