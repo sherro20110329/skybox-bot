@@ -37,19 +37,10 @@ async def setup_hook():
     runner = web.AppRunner(app); await runner.setup()
     site = web.TCPSite(runner, '0.0.0.0', 10000); bot.loop.create_task(site.start())
 
-# 🛒 [버튼형 상점 뷰] 충전, 상품목록, 구매 3개 버튼 구성
+# 🛒 [버튼형 상점 뷰] 상품목록, 구매 3개 버튼 구성
 class ShopView(View):
     def __init__(self):
         super().__init__(timeout=None)
-
-    @discord.ui.button(label="충전 💰", style=discord.ButtonStyle.success)
-    async def charge_btn(self, interaction: discord.Interaction, button: Button):
-        embed = discord.Embed(
-            title="💸 카카오페이 충전 안내",
-            description=f"아래 링크를 통해 판매자에게 송금하실 수 있습니다.\n\n📌 **송금 주소:** {MY_ACCOUNT_INFO}",
-            color=discord.Color.green()
-        )
-        await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @discord.ui.button(label="상품목록 📦", style=discord.ButtonStyle.secondary)
     async def list_btn(self, interaction: discord.Interaction, button: Button):
