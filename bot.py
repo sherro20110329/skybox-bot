@@ -91,6 +91,8 @@ class SkyboxSelect(Select):
 
 @bot.tree.command(name="가판대생성", description="스카이박스 멀티 상점 가판대를 생성합니다.")
 async def create_shop(interaction: discord.Interaction):
+    await interaction.response.defer()
+
     embed = discord.Embed(
         title="🌌 로블록스 라이벌스 스카이박스 전문 상점",
         description="원하시는 스카이박스 종류를 아래 메뉴에서 골라보세요!\n\n**💰 결제 수단:** 카카오페이 전용",
@@ -98,6 +100,6 @@ async def create_shop(interaction: discord.Interaction):
     )
     view = View()
     view.add_item(SkyboxSelect())
-    await interaction.response.send_message(embed=embed, view=view)
+    await interaction.followup.send(embed=embed, view=view)
 
 bot.run(BOT_TOKEN)
