@@ -2,6 +2,11 @@ import discord
 from discord.ext import commands
 from discord.ui import Select, View, Button
 
+import os
+import discord
+from discord.ext import commands
+from discord.ui import Select, View, Button
+
 BOT_TOKEN = os.environ.get("DISCORD_TOKEN")
 MY_ACCOUNT_INFO = "https://qr.kakaopay.com/FSPRjaCAp"
 ADMIN_USER_ID = 1383372151498997790
