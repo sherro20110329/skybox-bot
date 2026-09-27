@@ -11,6 +11,7 @@ ADMIN_USER_ID = 1383372151498997790
 # 🌌 판매할 라이벌스 스박 제품 리스트 (구글 드라이브 링크를 넣어줍니다!)
 SKYBOX_PRODUCTS = {
     "1": {"name": "stellive tell your world skybox", "price": "4500", "url": "https://drive.google.com/drive/folders/1BUfyGYMjL_uowfF6ojXGvJeyH7VGPEj3?usp=sharing"},
+    "2": {"name": "stellive Hanako Nana skybox", "price": "3000", "url": "https://drive.google.com/drive/folders/10tBF9cXFEtfj8LNAykgHSwXT6WXMzGzg?usp=sharing"}
 }
 
 intents = discord.Intents.default()
