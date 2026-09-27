@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord.ui import Select, View, Button
 
-BOT_TOKEN = "MTU1MzM5ODU3MTk3MjQyNzkyNg.GytWHA.aRZHIZFgMW_G4pauLp0vcVN2AodYbVzFYLZlT8"
+BOT_TOKEN = "MTU1MzM5ODU3MTk3MjQyNzkyNg.GaIH0v.D53TUyUl-i_HUx5dk4xn0LNGmJHst85x4e9XM0"
 MY_ACCOUNT_INFO = "https://qr.kakaopay.com/FSPRjaCAp"
 ADMIN_USER_ID = 1383372151498997790
 
