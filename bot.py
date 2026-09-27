@@ -37,13 +37,29 @@ async def setup_hook():
     runner = web.AppRunner(app); await runner.setup()
     site = web.TCPSite(runner, '0.0.0.0', 10000); bot.loop.create_task(site.start())
 
-# 🛒 [버튼형 상점 뷰] 상품목록, 구매 3개 버튼 구성
+# 🛒 [수정할 영역] 각 버튼 클릭 시 3초 만료 렉을 완벽하게 차단한 클래스
 class ShopView(View):
     def __init__(self):
         super().__init__(timeout=None)
 
+    @discord.ui.button(label="충전 💰", style=discord.ButtonStyle.success)
+    async def charge_btn(self, interaction: discord.Interaction, button: Button):
+        # 👇 버튼 클릭 즉시 디스코드 3초 타이머를 일시정지 시킵니다!
+        await interaction.response.defer(ephemeral=True) 
+        
+        embed = discord.Embed(
+            title="💸 카카오페이 충전 안내",
+            description=f"아래 링크를 통해 판매자에게 송금하실 수 있습니다.\n\n📌 **송금 주소:** {MY_ACCOUNT_INFO}",
+            color=discord.Color.green()
+        )
+        # 🌟 response 대신 followup 문법으로 안전하게 전송합니다.
+        await interaction.followup.send(embed=embed, ephemeral=True)
+
     @discord.ui.button(label="상품목록 📦", style=discord.ButtonStyle.secondary)
     async def list_btn(self, interaction: discord.Interaction, button: Button):
+        # 👇 버튼 클릭 즉시 디스코드 3초 타이머 일시정지!
+        await interaction.response.defer(ephemeral=True) 
+        
         product_text = ""
         for key, info in SKYBOX_PRODUCTS.items():
             product_text += f"**[{key}번] {info['name']}**\n┗ 💵 가격: {info['price']}원\n\n"
@@ -53,17 +69,23 @@ class ShopView(View):
             description=product_text + "*구매를 원하시면 [구매] 버튼을 누른 뒤 상품 번호를 입력해 주세요.*",
             color=discord.Color.blue()
         )
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        # 🌟 response 대신 followup 문법으로 안전하게 전송!
+        await interaction.followup.send(embed=embed, ephemeral=True)
 
     @discord.ui.button(label="구매 💳", style=discord.ButtonStyle.primary)
     async def buy_btn(self, interaction: discord.Interaction, button: Button):
+        # ⚠️ [주의] 입력창(모달)을 띄우는 버튼은 구조상 defer()를 쓰면 안 되고, 
+        # 모달창 자체에서 대답을 연장해야 하므로 아래 모달 코드를 정확히 덮어씌워 줍니다.
         class BuyModal(discord.ui.Modal, title="🛒 상품 구매 신청"):
             num_input = discord.ui.TextInput(label="구매할 상품 번호를 입력하세요", placeholder="예: 1", min_length=1, max_length=2)
             
             async def on_submit(self, modal_inter: discord.Interaction):
+                # 👇 손님이 상품 번호를 적고 '제출'을 누르는 순간 3초 타이머 일시정지!
+                await modal_inter.response.defer(ephemeral=True)
+                
                 p_id = self.num_input.value
                 if p_id not in SKYBOX_PRODUCTS:
-                    await modal_inter.response.send_message("❌ 존재하지 않는 상품 번호입니다. [상품목록]을 먼저 확인해 주세요.", ephemeral=True)
+                    await modal_inter.followup.send("❌ 존재하지 않는 상품 번호입니다. [상품목록]을 먼저 확인해 주세요.", ephemeral=True)
                     return
                 
                 product = SKYBOX_PRODUCTS[p_id]
@@ -76,7 +98,9 @@ class ShopView(View):
                 done_btn = Button(label="입금 완료 🌟", style=discord.ButtonStyle.blurple)
                 
                 async def done_callback(done_inter: discord.Interaction):
-                    await done_inter.response.send_message("⚙️ 관리자에게 입금 확인 요청을 보냈습니다. 잠시만 기다려주세요!", ephemeral=True)
+                    # 👇 입금 완료를 누르는 순간에도 즉시 3초 타이머 일시정지!
+                    await done_inter.response.defer(ephemeral=True)
+                    await done_inter.followup.send("⚙️ 관리자에게 입금 확인 요청을 보냈습니다. 잠시만 기다려주세요!", ephemeral=True)
                     
                     admin_user = await bot.fetch_user(ADMIN_USER_ID)
                     admin_embed = discord.Embed(
@@ -94,20 +118,22 @@ class ShopView(View):
                     reject_btn = Button(label="거절 (취소 처리)", style=discord.ButtonStyle.danger)
                     
                     async def approve_callback(app_inter: discord.Interaction):
+                        await app_inter.response.defer(ephemeral=True)
                         try:
                             await done_inter.user.send(
                                 f"🌌 **{product['name']} 구매가 완료되었습니다!**\n\n"
                                 f"**📂 [라이벌스 스카이박스 6개 파일 다운로드]**\n{product['url']}\n\n"
                                 f"💡 **적용 방법:**\n다운로드한 파일들을 압축 해제하신 후, `Fishstrap` 환경의 `platform content > pc > textures > sky` 폴더에 기존 파일들과 교체(덮어쓰기)해 주세요!"
                             )
-                            await app_inter.response.send_message(f"✅ 승인 완료! {done_inter.user.name}님에게 다운로드 주소를 보냈습니다.", ephemeral=True)
+                            await app_inter.followup.send(f"✅ 승인 완료! {done_inter.user.name}님에게 다운로드 주소를 보냈습니다.", ephemeral=True)
                         except discord.Forbidden:
-                            await app_inter.response.send_message(f"❌ 발송 실패: {done_inter.user.name}님이 DM을 차단해 두었습니다.", ephemeral=True)
+                            await app_inter.followup.send(f"❌ 발송 실패: {done_inter.user.name}님이 DM을 차단해 두었습니다.", ephemeral=True)
                     
                     async def reject_callback(rej_inter: discord.Interaction):
+                        await rej_inter.response.defer(ephemeral=True)
                         try: await done_inter.user.send(f"❌ '{product['name']}' 구매 요청이 거절되었거나 입금이 확인되지 않았습니다.")
                         except: pass
-                        await rej_inter.response.send_message("❌ 구매 요청을 거절 처리했습니다.", ephemeral=True)
+                        await rej_inter.followup.send("❌ 구매 요청을 거절 처리했습니다.", ephemeral=True)
 
                     approve_btn.callback = approve_callback; reject_btn.callback = reject_callback
                     admin_view = View(); admin_view.add_item(approve_btn); admin_view.add_item(reject_btn)
@@ -115,9 +141,10 @@ class ShopView(View):
 
                 done_btn.callback = done_callback
                 pay_view = View(); pay_view.add_item(done_btn)
-                await modal_inter.response.send_message(embed=pay_embed, view=pay_view, ephemeral=True)
+                await modal_inter.followup.send(embed=pay_embed, view=pay_view, ephemeral=True)
 
         await interaction.response.send_modal(BuyModal())
+
 
 @bot.tree.command(name="자판기", description="스카이박스 멀티 상점 가판대를 생성합니다.")
 async def create_shop(interaction: discord.Interaction):
