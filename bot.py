@@ -42,19 +42,6 @@ class ShopView(View):
     def __init__(self):
         super().__init__(timeout=None)
 
-    @discord.ui.button(label="충전 💰", style=discord.ButtonStyle.success)
-    async def charge_btn(self, interaction: discord.Interaction, button: Button):
-        # 👇 버튼 클릭 즉시 디스코드 3초 타이머를 일시정지 시킵니다!
-        await interaction.response.defer(ephemeral=True) 
-        
-        embed = discord.Embed(
-            title="💸 카카오페이 충전 안내",
-            description=f"아래 링크를 통해 판매자에게 송금하실 수 있습니다.\n\n📌 **송금 주소:** {MY_ACCOUNT_INFO}",
-            color=discord.Color.green()
-        )
-        # 🌟 response 대신 followup 문법으로 안전하게 전송합니다.
-        await interaction.followup.send(embed=embed, ephemeral=True)
-
     @discord.ui.button(label="상품목록 📦", style=discord.ButtonStyle.secondary)
     async def list_btn(self, interaction: discord.Interaction, button: Button):
         # 👇 버튼 클릭 즉시 디스코드 3초 타이머 일시정지!
