@@ -21,6 +21,21 @@ SKYBOX_PRODUCTS = {
         "price": "3000", 
         "url": "https://drive.google.com/drive/folders/10tBF9cXFEtfj8LNAykgHSwXT6WXMzGzg?usp=sharing"
     },
+    "3": {
+        "name": "stellive Neneko Mashiro skybox", 
+        "price": "4000", 
+        "url": "https://drive.google.com/drive/folders/1tX8s3iL_IntgagraNxnN1f_GS5SOub_v?usp=sharing"
+    },
+    "4": {
+        "name": "stellive univers skybox", 
+        "price": "2500", 
+        "url": "https://drive.google.com/drive/folders/1hV4NPgJsqRukrYQoouQRUnG4gqPcd_Ju?usp=sharing"
+    },
+    "5": {
+        "name": "stellive Akane Lize skybox", 
+        "price": "3500", 
+        "url": "https://drive.google.com/drive/folders/1K3ELgrRVl2VX-hA4vgF-4Ew52FKFFypo?usp=sharing"
+    },
 }
 
 # 렌더 무한 대기 렉 방지용 가짜 웹 서버
