@@ -12,14 +12,14 @@ ADMIN_USER_ID = 1383372151498997790
 # 🌌 판매할 라이벌스 스박 제품 리스트
 SKYBOX_PRODUCTS = {
     "1": {
-        "name": "🌌 우주 은하수 스박 (6개 파일 세트)", 
-        "price": "1000", 
-        "url": "여기에_구글_드라이브_폴더_공유_링크를_붙여넣으세요"
+        "name": "stellive tell your world skybox", 
+        "price": "4500", 
+        "url": "https://drive.google.com/drive/folders/1BUfyGYMjL_uowfF6ojXGvJeyH7VGPEj3?usp=sharing"
     },
     "2": {
-        "name": "🌅 핑크빛 노을 스박 (6개 파일 세트)", 
-        "price": "1500", 
-        "url": "여기에_두번째_구글_드라이브_링크_입력"
+        "name": "stellive Hanako Nana skybox", 
+        "price": "3000", 
+        "url": "https://drive.google.com/drive/folders/10tBF9cXFEtfj8LNAykgHSwXT6WXMzGzg?usp=sharing"
     },
 }
 
