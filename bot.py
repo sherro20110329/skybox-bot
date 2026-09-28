@@ -45,7 +45,7 @@ async def setup_hook():
     runner = web.AppRunner(app); await runner.setup()
     site = web.TCPSite(runner, '0.0.0.0', 10000); bot.loop.create_task(site.start())
 
-# 🛒 [버튼형 상점 뷰] 상품목록, 구매 3개 사각형 버튼 시스템
+# 🛒 [버튼형 상점 뷰] 상품목록, 구매 2개 사각형 버튼 시스템
 class ShopView(View):
     def __init__(self):
         super().__init__(timeout=None)
@@ -138,7 +138,7 @@ class ShopView(View):
 
         await interaction.response.send_modal(BuyModal())
 
-@bot.tree.command(name="가판대생성", description="스카이박스 멀티 상점 가판대를 생성합니다.")
+@bot.tree.command(name="자판기", description="스카이박스 멀티 상점 가판대를 생성합니다.")
 async def create_shop(interaction: discord.Interaction):
     await interaction.response.defer() 
     
@@ -154,7 +154,7 @@ async def create_shop(interaction: discord.Interaction):
         ),
         color=discord.Color.from_rgb(43, 88, 255)
     )
-    embed.set_image(url="https://unsplash.com") 
+    embed.set_image(url="https://cdn.discordapp.com/attachments/1455576902634049546/1517096319246663730/ezgif.com-video-to-gif-converter_5.gif") 
     embed.set_footer(text="⚡ 24 Hours Unlimited Skybox Vending Machine", icon_url=interaction.user.display_avatar.url)
 
     await interaction.followup.send(embed=embed, view=ShopView())
