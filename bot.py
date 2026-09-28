@@ -4,18 +4,26 @@ from discord.ui import View, Button
 import os
 from aiohttp import web
 
-# ⚠️ 기본 정보 설정 (내 주소와 ID에 맞게 수정하세요!)
+# ⚠️ [필독] 여기 상단 3가지 변수 정보가 내 주소와 ID에 맞게 적혀있는지만 꼭 확인해 주세요!
 BOT_TOKEN = os.environ.get("DISCORD_TOKEN")
 MY_ACCOUNT_INFO = "https://qr.kakaopay.com/FSPRjaCAp"
 ADMIN_USER_ID = 1383372151498997790
 
 # 🌌 판매할 라이벌스 스박 제품 리스트
 SKYBOX_PRODUCTS = {
-    "1": {"name": "stellive tell your world skybox", "price": "4500", "url": "https://drive.google.com/drive/folders/1BUfyGYMjL_uowfF6ojXGvJeyH7VGPEj3?usp=sharing"},
-    "2": {"name": "stellive Hanako Nana skybox", "price": "3000", "url": "https://drive.google.com/drive/folders/10tBF9cXFEtfj8LNAykgHSwXT6WXMzGzg?usp=sharing"}
+    "1": {
+        "name": "🌌 우주 은하수 스박 (6개 파일 세트)", 
+        "price": "1000", 
+        "url": "여기에_구글_드라이브_폴더_공유_링크를_붙여넣으세요"
+    },
+    "2": {
+        "name": "🌅 핑크빛 노을 스박 (6개 파일 세트)", 
+        "price": "1500", 
+        "url": "여기에_두번째_구글_드라이브_링크_입력"
+    },
 }
 
-# 렌더 시스템 우회용 가짜 웹 서버
+# 렌더 무한 대기 렉 방지용 가짜 웹 서버
 async def handle(request): return web.Response(text="LIVE")
 
 intents = discord.Intents.default()
@@ -37,14 +45,14 @@ async def setup_hook():
     runner = web.AppRunner(app); await runner.setup()
     site = web.TCPSite(runner, '0.0.0.0', 10000); bot.loop.create_task(site.start())
 
-# 🛒 [수정할 영역] 각 버튼 클릭 시 3초 만료 렉을 완벽하게 차단한 클래스
+# 🛒 [버튼형 상점 뷰] 상품목록, 구매 3개 사각형 버튼 시스템
 class ShopView(View):
     def __init__(self):
         super().__init__(timeout=None)
 
     @discord.ui.button(label="상품목록 📦", style=discord.ButtonStyle.secondary)
     async def list_btn(self, interaction: discord.Interaction, button: Button):
-        # 👇 버튼 클릭 즉시 디스코드 3초 타이머 일시정지!
+        # ⚡ 버튼 클릭 즉시 디스코드 3초 만료 타이머를 일시정지 시킵니다!
         await interaction.response.defer(ephemeral=True) 
         
         product_text = ""
@@ -56,18 +64,16 @@ class ShopView(View):
             description=product_text + "*구매를 원하시면 [구매] 버튼을 누른 뒤 상품 번호를 입력해 주세요.*",
             color=discord.Color.blue()
         )
-        # 🌟 response 대신 followup 문법으로 안전하게 전송!
         await interaction.followup.send(embed=embed, ephemeral=True)
 
     @discord.ui.button(label="구매 💳", style=discord.ButtonStyle.primary)
     async def buy_btn(self, interaction: discord.Interaction, button: Button):
-        # ⚠️ [주의] 입력창(모달)을 띄우는 버튼은 구조상 defer()를 쓰면 안 되고, 
-        # 모달창 자체에서 대답을 연장해야 하므로 아래 모달 코드를 정확히 덮어씌워 줍니다.
+        # ⚠️ 입력창(모달) 팝업을 띄우는 특수 버튼이므로 모달 본체에서 타이머를 지연시킵니다.
         class BuyModal(discord.ui.Modal, title="🛒 상품 구매 신청"):
             num_input = discord.ui.TextInput(label="구매할 상품 번호를 입력하세요", placeholder="예: 1", min_length=1, max_length=2)
             
             async def on_submit(self, modal_inter: discord.Interaction):
-                # 👇 손님이 상품 번호를 적고 '제출'을 누르는 순간 3초 타이머 일시정지!
+                # ⚡ 번호 입력 후 '제출' 누르는 순간 3초 타이머 즉시 일시정지!
                 await modal_inter.response.defer(ephemeral=True)
                 
                 p_id = self.num_input.value
@@ -85,7 +91,7 @@ class ShopView(View):
                 done_btn = Button(label="입금 완료 🌟", style=discord.ButtonStyle.blurple)
                 
                 async def done_callback(done_inter: discord.Interaction):
-                    # 👇 입금 완료를 누르는 순간에도 즉시 3초 타이머 일시정지!
+                    # ⚡ 입금 완료 버튼 클릭 즉시 3초 타이머 일시정지!
                     await done_inter.response.defer(ephemeral=True)
                     await done_inter.followup.send("⚙️ 관리자에게 입금 확인 요청을 보냈습니다. 잠시만 기다려주세요!", ephemeral=True)
                     
@@ -132,8 +138,7 @@ class ShopView(View):
 
         await interaction.response.send_modal(BuyModal())
 
-
-@bot.tree.command(name="자판기", description="스카이박스 멀티 상점 가판대를 생성합니다.")
+@bot.tree.command(name="가판대생성", description="스카이박스 멀티 상점 가판대를 생성합니다.")
 async def create_shop(interaction: discord.Interaction):
     await interaction.response.defer() 
     
@@ -149,7 +154,7 @@ async def create_shop(interaction: discord.Interaction):
         ),
         color=discord.Color.from_rgb(43, 88, 255)
     )
-    embed.set_image(url="https://cdn.discordapp.com/attachments/1455576902634049546/1517096319246663730/ezgif.com-video-to-gif-converter_5.gif") 
+    embed.set_image(url="https://unsplash.com") 
     embed.set_footer(text="⚡ 24 Hours Unlimited Skybox Vending Machine", icon_url=interaction.user.display_avatar.url)
 
     await interaction.followup.send(embed=embed, view=ShopView())
