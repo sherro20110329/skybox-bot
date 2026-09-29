@@ -36,6 +36,16 @@ SKYBOX_PRODUCTS = {
         "price": "3500", 
         "url": "https://drive.google.com/drive/folders/1K3ELgrRVl2VX-hA4vgF-4Ew52FKFFypo?usp=sharing"
     },
+    "6": {
+        "name": "stellive Aokumo Rin skybox", 
+        "price": "2500", 
+        "url": "https://drive.google.com/drive/folders/19BWCQEAANAiGgnkoMqt5o8OkvRECGU0N?usp=sharing"
+    },
+    "7": {
+        "name": "stellive Airi Kanna skybox", 
+        "price": "4500", 
+        "url": "https://drive.google.com/drive/folders/15XLjksNwSfC0NiEgKjeU-MupViquHrDT?usp=sharing"
+    },
 }
 
 # 렌더 무한 대기 렉 방지용 가짜 웹 서버
