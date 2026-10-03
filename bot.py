@@ -184,4 +184,12 @@ async def create_shop(interaction: discord.Interaction):
 
     await interaction.followup.send(embed=embed, view=ShopView())
 
+# 💡 여기에 아래 코드를 벽에 바짝 붙여서 추가하세요!
+@bot.event
+async def on_ready():
+    print(f"{bot.user.name} 봇이 성공적으로 켜졌습니다!")
+    await bot.change_presence(
+        activity=discord.CustomActivity(state="스카이박스 구매해주세요...!!😉")
+    )
+
 bot.run(BOT_TOKEN)
