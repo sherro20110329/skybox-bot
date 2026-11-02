@@ -6,7 +6,7 @@ from aiohttp import web
 
 # ⚠️ [필독] 여기 상단 3가지 변수 정보가 내 주소와 ID에 맞게 적혀있는지만 꼭 확인해 주세요!
 BOT_TOKEN = os.environ.get("DISCORD_TOKEN")
-MY_ACCOUNT_INFO = "https://qr.kakaopay.com/FSPRjaCAp"
+MY_ACCOUNT_INFO = "(카카오 페이) 국민은행 7034-9074-2560-74"
 ADMIN_USER_ID = 1383372151498997790
 
 # 🌌 판매할 라이벌스 스박 제품 리스트
