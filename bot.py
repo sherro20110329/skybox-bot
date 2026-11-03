@@ -13,12 +13,12 @@ ADMIN_USER_ID = 1383372151498997790
 SKYBOX_PRODUCTS = {
     "1": {
         "name": "stellive tell your world skybox", 
-        "price": "4500", 
+        "price": "3500", 
         "url": "https://drive.google.com/drive/folders/1BUfyGYMjL_uowfF6ojXGvJeyH7VGPEj3?usp=sharing"
     },
     "2": {
         "name": "stellive Hanako Nana skybox", 
-        "price": "3000", 
+        "price": "2500", 
         "url": "https://drive.google.com/drive/folders/10tBF9cXFEtfj8LNAykgHSwXT6WXMzGzg?usp=sharing"
     },
     "3": {
