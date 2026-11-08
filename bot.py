@@ -46,6 +46,11 @@ SKYBOX_PRODUCTS = {
         "price": "4500", 
         "url": "https://drive.google.com/drive/folders/15XLjksNwSfC0NiEgKjeU-MupViquHrDT?usp=sharing"
     },
+    "8": {
+        "name": "stellive Tokino Mery skybox", 
+        "price": "3500", 
+        "url": "https://drive.google.com/drive/folders/1KwRdPeyAwPj0xfJr712HahmWXTNanqPD?usp=sharing"
+    },
 }
 
 # 렌더 무한 대기 렉 방지용 가짜 웹 서버
